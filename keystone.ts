@@ -16,6 +16,23 @@ export default withAuth(
       provider: "postgresql",
       url: process.env.DATABASE_URL || "",
     },
+    storage: {
+      local: {
+        kind: "local",
+        type: "image",
+        generateUrl: (path) => `http://localhost:3000/images${path}`,
+        serverRoute: {
+          path: "/images",
+        },
+        storagePath: "public/images",
+      },
+    },
+    server: {
+      cors: {
+        origin: ["http://localhost:5000"],
+        credentials: true,
+      },
+    },
     lists,
     session,
   })
