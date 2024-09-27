@@ -17,4 +17,74 @@ model User {
   email     String    @unique @default("")
   password  String
   createdAt DateTime? @default(now())
+  role      String?   @default("admin")
+}
+
+model Texte {
+  id       String @id @default(cuid())
+  title    String @default("")
+  subtitle String @default("")
+  content  Json   @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+}
+
+model Image {
+  id               String          @id @default(cuid())
+  file_id          String?
+  file_filesize    Int?
+  file_width       Int?
+  file_height      Int?
+  file_extension   String?
+  order            Int?
+  exposition       Exposition?     @relation("Image_exposition", fields: [expositionId], references: [id])
+  expositionId     String?         @map("exposition")
+  sectionTravaux   SectionTravaux? @relation("Image_sectionTravaux", fields: [sectionTravauxId], references: [id])
+  sectionTravauxId String?         @unique @map("sectionTravaux")
+  sectionAbout     SectionAbout?   @relation("Image_sectionAbout", fields: [sectionAboutId], references: [id])
+  sectionAboutId   String?         @unique @map("sectionAbout")
+  about            About?          @relation("About_image")
+
+  @@index([expositionId])
+}
+
+model Exposition {
+  id        String    @id @default(cuid())
+  title     String    @default("")
+  subtitle  String    @default("")
+  content   Json      @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  createdAt DateTime? @default(now())
+  images    Image[]   @relation("Image_exposition")
+}
+
+model Travaux {
+  id        String           @id @default(cuid())
+  title     String           @default("")
+  subtitle  String           @default("")
+  createdAt DateTime?        @default(now())
+  sections  SectionTravaux[] @relation("SectionTravaux_travaux")
+}
+
+model SectionTravaux {
+  id        String   @id @default(cuid())
+  content   Json     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  section   String
+  travaux   Travaux? @relation("SectionTravaux_travaux", fields: [travauxId], references: [id])
+  travauxId String?  @map("travaux")
+  image     Image?   @relation("Image_sectionTravaux")
+
+  @@index([travauxId])
+}
+
+model About {
+  id       String         @id @default(cuid())
+  image    Image?         @relation("About_image", fields: [imageId], references: [id])
+  imageId  String?        @unique @map("image")
+  sections SectionAbout[] @relation("About_sections")
+}
+
+model SectionAbout {
+  id                  String  @id @default(cuid())
+  type                String
+  content             Json    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  image               Image?  @relation("Image_sectionAbout")
+  from_About_sections About[] @relation("About_sections")
 }

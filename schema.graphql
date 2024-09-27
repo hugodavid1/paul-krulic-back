@@ -7,6 +7,7 @@ type User {
   email: String
   password: PasswordState
   createdAt: DateTime
+  role: String
 }
 
 type PasswordState {
@@ -28,6 +29,7 @@ input UserWhereInput {
   name: StringFilter
   email: StringFilter
   createdAt: DateTimeNullableFilter
+  role: StringNullableFilter
 }
 
 input IDFilter {
@@ -86,11 +88,27 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: StringNullableFilter
+}
+
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
   createdAt: OrderDirection
+  role: OrderDirection
 }
 
 enum OrderDirection {
@@ -103,6 +121,7 @@ input UserUpdateInput {
   email: String
   password: String
   createdAt: DateTime
+  role: String
 }
 
 input UserUpdateArgs {
@@ -115,6 +134,504 @@ input UserCreateInput {
   email: String
   password: String
   createdAt: DateTime
+  role: String
+}
+
+type Texte {
+  id: ID!
+  title: String
+  subtitle: String
+  content: Texte_content_Document
+}
+
+type Texte_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input TexteWhereUniqueInput {
+  id: ID
+}
+
+input TexteWhereInput {
+  AND: [TexteWhereInput!]
+  OR: [TexteWhereInput!]
+  NOT: [TexteWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  subtitle: StringFilter
+}
+
+input TexteOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  subtitle: OrderDirection
+}
+
+input TexteUpdateInput {
+  title: String
+  subtitle: String
+  content: JSON
+}
+
+input TexteUpdateArgs {
+  where: TexteWhereUniqueInput!
+  data: TexteUpdateInput!
+}
+
+input TexteCreateInput {
+  title: String
+  subtitle: String
+  content: JSON
+}
+
+type Image {
+  id: ID!
+  file: ImageFieldOutput
+  order: Int
+  exposition: Exposition
+  sectionTravaux: SectionTravaux
+  sectionAbout: SectionAbout
+  about: About
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+input ImageWhereUniqueInput {
+  id: ID
+}
+
+input ImageWhereInput {
+  AND: [ImageWhereInput!]
+  OR: [ImageWhereInput!]
+  NOT: [ImageWhereInput!]
+  id: IDFilter
+  order: IntNullableFilter
+  exposition: ExpositionWhereInput
+  sectionTravaux: SectionTravauxWhereInput
+  sectionAbout: SectionAboutWhereInput
+  about: AboutWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input ImageOrderByInput {
+  id: OrderDirection
+  order: OrderDirection
+}
+
+input ImageUpdateInput {
+  file: ImageFieldInput
+  order: Int
+  exposition: ExpositionRelateToOneForUpdateInput
+  sectionTravaux: SectionTravauxRelateToOneForUpdateInput
+  sectionAbout: SectionAboutRelateToOneForUpdateInput
+  about: AboutRelateToOneForUpdateInput
+}
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input ExpositionRelateToOneForUpdateInput {
+  create: ExpositionCreateInput
+  connect: ExpositionWhereUniqueInput
+  disconnect: Boolean
+}
+
+input SectionTravauxRelateToOneForUpdateInput {
+  create: SectionTravauxCreateInput
+  connect: SectionTravauxWhereUniqueInput
+  disconnect: Boolean
+}
+
+input SectionAboutRelateToOneForUpdateInput {
+  create: SectionAboutCreateInput
+  connect: SectionAboutWhereUniqueInput
+  disconnect: Boolean
+}
+
+input AboutRelateToOneForUpdateInput {
+  create: AboutCreateInput
+  connect: AboutWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ImageUpdateArgs {
+  where: ImageWhereUniqueInput!
+  data: ImageUpdateInput!
+}
+
+input ImageCreateInput {
+  file: ImageFieldInput
+  order: Int
+  exposition: ExpositionRelateToOneForCreateInput
+  sectionTravaux: SectionTravauxRelateToOneForCreateInput
+  sectionAbout: SectionAboutRelateToOneForCreateInput
+  about: AboutRelateToOneForCreateInput
+}
+
+input ExpositionRelateToOneForCreateInput {
+  create: ExpositionCreateInput
+  connect: ExpositionWhereUniqueInput
+}
+
+input SectionTravauxRelateToOneForCreateInput {
+  create: SectionTravauxCreateInput
+  connect: SectionTravauxWhereUniqueInput
+}
+
+input SectionAboutRelateToOneForCreateInput {
+  create: SectionAboutCreateInput
+  connect: SectionAboutWhereUniqueInput
+}
+
+input AboutRelateToOneForCreateInput {
+  create: AboutCreateInput
+  connect: AboutWhereUniqueInput
+}
+
+type Exposition {
+  id: ID!
+  title: String
+  subtitle: String
+  content: Exposition_content_Document
+  createdAt: DateTime
+  images(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
+  imagesCount(where: ImageWhereInput! = {}): Int
+}
+
+type Exposition_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input ExpositionWhereUniqueInput {
+  id: ID
+}
+
+input ExpositionWhereInput {
+  AND: [ExpositionWhereInput!]
+  OR: [ExpositionWhereInput!]
+  NOT: [ExpositionWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  subtitle: StringFilter
+  createdAt: DateTimeNullableFilter
+  images: ImageManyRelationFilter
+}
+
+input ImageManyRelationFilter {
+  every: ImageWhereInput
+  some: ImageWhereInput
+  none: ImageWhereInput
+}
+
+input ExpositionOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  subtitle: OrderDirection
+  createdAt: OrderDirection
+}
+
+input ExpositionUpdateInput {
+  title: String
+  subtitle: String
+  content: JSON
+  createdAt: DateTime
+  images: ImageRelateToManyForUpdateInput
+}
+
+input ImageRelateToManyForUpdateInput {
+  disconnect: [ImageWhereUniqueInput!]
+  set: [ImageWhereUniqueInput!]
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
+}
+
+input ExpositionUpdateArgs {
+  where: ExpositionWhereUniqueInput!
+  data: ExpositionUpdateInput!
+}
+
+input ExpositionCreateInput {
+  title: String
+  subtitle: String
+  content: JSON
+  createdAt: DateTime
+  images: ImageRelateToManyForCreateInput
+}
+
+input ImageRelateToManyForCreateInput {
+  create: [ImageCreateInput!]
+  connect: [ImageWhereUniqueInput!]
+}
+
+type Travaux {
+  id: ID!
+  title: String
+  subtitle: String
+  createdAt: DateTime
+  sections(where: SectionTravauxWhereInput! = {}, orderBy: [SectionTravauxOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionTravauxWhereUniqueInput): [SectionTravaux!]
+  sectionsCount(where: SectionTravauxWhereInput! = {}): Int
+}
+
+input TravauxWhereUniqueInput {
+  id: ID
+}
+
+input TravauxWhereInput {
+  AND: [TravauxWhereInput!]
+  OR: [TravauxWhereInput!]
+  NOT: [TravauxWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  subtitle: StringFilter
+  createdAt: DateTimeNullableFilter
+  sections: SectionTravauxManyRelationFilter
+}
+
+input SectionTravauxManyRelationFilter {
+  every: SectionTravauxWhereInput
+  some: SectionTravauxWhereInput
+  none: SectionTravauxWhereInput
+}
+
+input TravauxOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  subtitle: OrderDirection
+  createdAt: OrderDirection
+}
+
+input TravauxUpdateInput {
+  title: String
+  subtitle: String
+  createdAt: DateTime
+  sections: SectionTravauxRelateToManyForUpdateInput
+}
+
+input SectionTravauxRelateToManyForUpdateInput {
+  disconnect: [SectionTravauxWhereUniqueInput!]
+  set: [SectionTravauxWhereUniqueInput!]
+  create: [SectionTravauxCreateInput!]
+  connect: [SectionTravauxWhereUniqueInput!]
+}
+
+input TravauxUpdateArgs {
+  where: TravauxWhereUniqueInput!
+  data: TravauxUpdateInput!
+}
+
+input TravauxCreateInput {
+  title: String
+  subtitle: String
+  createdAt: DateTime
+  sections: SectionTravauxRelateToManyForCreateInput
+}
+
+input SectionTravauxRelateToManyForCreateInput {
+  create: [SectionTravauxCreateInput!]
+  connect: [SectionTravauxWhereUniqueInput!]
+}
+
+type SectionTravaux {
+  id: ID!
+  content: SectionTravaux_content_Document
+  section: String
+  travaux: Travaux
+  image: Image
+}
+
+type SectionTravaux_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input SectionTravauxWhereUniqueInput {
+  id: ID
+}
+
+input SectionTravauxWhereInput {
+  AND: [SectionTravauxWhereInput!]
+  OR: [SectionTravauxWhereInput!]
+  NOT: [SectionTravauxWhereInput!]
+  id: IDFilter
+  section: StringFilter
+  travaux: TravauxWhereInput
+  image: ImageWhereInput
+}
+
+input SectionTravauxOrderByInput {
+  id: OrderDirection
+  section: OrderDirection
+}
+
+input SectionTravauxUpdateInput {
+  content: JSON
+  section: String
+  travaux: TravauxRelateToOneForUpdateInput
+  image: ImageRelateToOneForUpdateInput
+}
+
+input TravauxRelateToOneForUpdateInput {
+  create: TravauxCreateInput
+  connect: TravauxWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ImageRelateToOneForUpdateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+  disconnect: Boolean
+}
+
+input SectionTravauxUpdateArgs {
+  where: SectionTravauxWhereUniqueInput!
+  data: SectionTravauxUpdateInput!
+}
+
+input SectionTravauxCreateInput {
+  content: JSON
+  section: String
+  travaux: TravauxRelateToOneForCreateInput
+  image: ImageRelateToOneForCreateInput
+}
+
+input TravauxRelateToOneForCreateInput {
+  create: TravauxCreateInput
+  connect: TravauxWhereUniqueInput
+}
+
+input ImageRelateToOneForCreateInput {
+  create: ImageCreateInput
+  connect: ImageWhereUniqueInput
+}
+
+type About {
+  id: ID!
+  image: Image
+  sections(where: SectionAboutWhereInput! = {}, orderBy: [SectionAboutOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionAboutWhereUniqueInput): [SectionAbout!]
+  sectionsCount(where: SectionAboutWhereInput! = {}): Int
+}
+
+input AboutWhereUniqueInput {
+  id: ID
+}
+
+input AboutWhereInput {
+  AND: [AboutWhereInput!]
+  OR: [AboutWhereInput!]
+  NOT: [AboutWhereInput!]
+  id: IDFilter
+  image: ImageWhereInput
+  sections: SectionAboutManyRelationFilter
+}
+
+input SectionAboutManyRelationFilter {
+  every: SectionAboutWhereInput
+  some: SectionAboutWhereInput
+  none: SectionAboutWhereInput
+}
+
+input AboutOrderByInput {
+  id: OrderDirection
+}
+
+input AboutUpdateInput {
+  image: ImageRelateToOneForUpdateInput
+  sections: SectionAboutRelateToManyForUpdateInput
+}
+
+input SectionAboutRelateToManyForUpdateInput {
+  disconnect: [SectionAboutWhereUniqueInput!]
+  set: [SectionAboutWhereUniqueInput!]
+  create: [SectionAboutCreateInput!]
+  connect: [SectionAboutWhereUniqueInput!]
+}
+
+input AboutUpdateArgs {
+  where: AboutWhereUniqueInput!
+  data: AboutUpdateInput!
+}
+
+input AboutCreateInput {
+  image: ImageRelateToOneForCreateInput
+  sections: SectionAboutRelateToManyForCreateInput
+}
+
+input SectionAboutRelateToManyForCreateInput {
+  create: [SectionAboutCreateInput!]
+  connect: [SectionAboutWhereUniqueInput!]
+}
+
+type SectionAbout {
+  id: ID!
+  type: String
+  content: SectionAbout_content_Document
+  image: Image
+}
+
+type SectionAbout_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input SectionAboutWhereUniqueInput {
+  id: ID
+}
+
+input SectionAboutWhereInput {
+  AND: [SectionAboutWhereInput!]
+  OR: [SectionAboutWhereInput!]
+  NOT: [SectionAboutWhereInput!]
+  id: IDFilter
+  type: StringFilter
+  image: ImageWhereInput
+}
+
+input SectionAboutOrderByInput {
+  id: OrderDirection
+  type: OrderDirection
+}
+
+input SectionAboutUpdateInput {
+  type: String
+  content: JSON
+  image: ImageRelateToOneForUpdateInput
+}
+
+input SectionAboutUpdateArgs {
+  where: SectionAboutWhereUniqueInput!
+  data: SectionAboutUpdateInput!
+}
+
+input SectionAboutCreateInput {
+  type: String
+  content: JSON
+  image: ImageRelateToOneForCreateInput
 }
 
 """
@@ -129,6 +646,48 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
+  createTexte(data: TexteCreateInput!): Texte
+  createTextes(data: [TexteCreateInput!]!): [Texte]
+  updateTexte(where: TexteWhereUniqueInput!, data: TexteUpdateInput!): Texte
+  updateTextes(data: [TexteUpdateArgs!]!): [Texte]
+  deleteTexte(where: TexteWhereUniqueInput!): Texte
+  deleteTextes(where: [TexteWhereUniqueInput!]!): [Texte]
+  createImage(data: ImageCreateInput!): Image
+  createImages(data: [ImageCreateInput!]!): [Image]
+  updateImage(where: ImageWhereUniqueInput!, data: ImageUpdateInput!): Image
+  updateImages(data: [ImageUpdateArgs!]!): [Image]
+  deleteImage(where: ImageWhereUniqueInput!): Image
+  deleteImages(where: [ImageWhereUniqueInput!]!): [Image]
+  createExposition(data: ExpositionCreateInput!): Exposition
+  createExpositions(data: [ExpositionCreateInput!]!): [Exposition]
+  updateExposition(where: ExpositionWhereUniqueInput!, data: ExpositionUpdateInput!): Exposition
+  updateExpositions(data: [ExpositionUpdateArgs!]!): [Exposition]
+  deleteExposition(where: ExpositionWhereUniqueInput!): Exposition
+  deleteExpositions(where: [ExpositionWhereUniqueInput!]!): [Exposition]
+  createTravaux(data: TravauxCreateInput!): Travaux
+  createTravauxes(data: [TravauxCreateInput!]!): [Travaux]
+  updateTravaux(where: TravauxWhereUniqueInput!, data: TravauxUpdateInput!): Travaux
+  updateTravauxes(data: [TravauxUpdateArgs!]!): [Travaux]
+  deleteTravaux(where: TravauxWhereUniqueInput!): Travaux
+  deleteTravauxes(where: [TravauxWhereUniqueInput!]!): [Travaux]
+  createSectionTravaux(data: SectionTravauxCreateInput!): SectionTravaux
+  createSectionTravauxes(data: [SectionTravauxCreateInput!]!): [SectionTravaux]
+  updateSectionTravaux(where: SectionTravauxWhereUniqueInput!, data: SectionTravauxUpdateInput!): SectionTravaux
+  updateSectionTravauxes(data: [SectionTravauxUpdateArgs!]!): [SectionTravaux]
+  deleteSectionTravaux(where: SectionTravauxWhereUniqueInput!): SectionTravaux
+  deleteSectionTravauxes(where: [SectionTravauxWhereUniqueInput!]!): [SectionTravaux]
+  createAbout(data: AboutCreateInput!): About
+  createAbouts(data: [AboutCreateInput!]!): [About]
+  updateAbout(where: AboutWhereUniqueInput!, data: AboutUpdateInput!): About
+  updateAbouts(data: [AboutUpdateArgs!]!): [About]
+  deleteAbout(where: AboutWhereUniqueInput!): About
+  deleteAbouts(where: [AboutWhereUniqueInput!]!): [About]
+  createSectionAbout(data: SectionAboutCreateInput!): SectionAbout
+  createSectionAbouts(data: [SectionAboutCreateInput!]!): [SectionAbout]
+  updateSectionAbout(where: SectionAboutWhereUniqueInput!, data: SectionAboutUpdateInput!): SectionAbout
+  updateSectionAbouts(data: [SectionAboutUpdateArgs!]!): [SectionAbout]
+  deleteSectionAbout(where: SectionAboutWhereUniqueInput!): SectionAbout
+  deleteSectionAbouts(where: [SectionAboutWhereUniqueInput!]!): [SectionAbout]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -155,6 +714,27 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
+  texte(where: TexteWhereUniqueInput!): Texte
+  textes(where: TexteWhereInput! = {}, orderBy: [TexteOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TexteWhereUniqueInput): [Texte!]
+  textesCount(where: TexteWhereInput! = {}): Int
+  image(where: ImageWhereUniqueInput!): Image
+  images(where: ImageWhereInput! = {}, orderBy: [ImageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ImageWhereUniqueInput): [Image!]
+  imagesCount(where: ImageWhereInput! = {}): Int
+  exposition(where: ExpositionWhereUniqueInput!): Exposition
+  expositions(where: ExpositionWhereInput! = {}, orderBy: [ExpositionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ExpositionWhereUniqueInput): [Exposition!]
+  expositionsCount(where: ExpositionWhereInput! = {}): Int
+  travaux(where: TravauxWhereUniqueInput!): Travaux
+  travauxes(where: TravauxWhereInput! = {}, orderBy: [TravauxOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TravauxWhereUniqueInput): [Travaux!]
+  travauxesCount(where: TravauxWhereInput! = {}): Int
+  sectionTravaux(where: SectionTravauxWhereUniqueInput!): SectionTravaux
+  sectionTravauxes(where: SectionTravauxWhereInput! = {}, orderBy: [SectionTravauxOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionTravauxWhereUniqueInput): [SectionTravaux!]
+  sectionTravauxesCount(where: SectionTravauxWhereInput! = {}): Int
+  about(where: AboutWhereUniqueInput!): About
+  abouts(where: AboutWhereInput! = {}, orderBy: [AboutOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: AboutWhereUniqueInput): [About!]
+  aboutsCount(where: AboutWhereInput! = {}): Int
+  sectionAbout(where: SectionAboutWhereUniqueInput!): SectionAbout
+  sectionAbouts(where: SectionAboutWhereInput! = {}, orderBy: [SectionAboutOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SectionAboutWhereUniqueInput): [SectionAbout!]
+  sectionAboutsCount(where: SectionAboutWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
